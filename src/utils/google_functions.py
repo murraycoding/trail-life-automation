@@ -14,8 +14,8 @@ def get_google_creds():
     """
     creds = None
     SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
-    token_path = "src/trail_life/token.json"
-    credentials_path = "src/trail_life/credentials.json"
+    token_path = "src/utils/token.json"
+    credentials_path = "src/utils/credentials.json"
         # 
     # The file token.json stores the user's access and refresh tokens, and is
     # created automatically when the authorization flow completes for the first
@@ -43,8 +43,7 @@ def update_google_sheet(sheet_id, range_name, data):
     """
     creds = get_google_creds()
 
-    print(" - - - - - - UPDATING GOOGLE SHEET - - - - - - ")
-    print()
+    print(" - - Google Sheets Update")
     try:
         service = build("sheets", "v4", credentials=creds)
 
@@ -64,12 +63,10 @@ def update_google_sheet(sheet_id, range_name, data):
         values = result.get("values",[])
 
         if not values:
-            print(" - - - - - - UPDATED COMPLETE (No data returned)- - - - - -")
-            print()
-            return
+            print(" - - Update Complete (No data returned)")
+            return None
 
-        print(" - - - - - - UPDATED COMPLETE - - - - - -")
-        print()
+        print(" - - Update Compelte (returning data)")
 
         return values
 
@@ -85,8 +82,7 @@ def get_google_sheets_data(sheet_id, range_name):
 
     :return: list: The data from the sheet
     """
-    print(" - - - - - GETTING GOOGLE SHEETS DATA - - - - - ")
-    print()
+    print(" - - Google Sheets Query")
     creds = get_google_creds()
 
     try:
@@ -107,8 +103,7 @@ def get_google_sheets_data(sheet_id, range_name):
         )
         values = result.get("values", [])
         
-        print(" - - - - - - DATA RETRIEVED - - - - - - ")
-        print()
+        print(" - - Query Complete (returning data)")
         return values
 
     except HttpError as http_error:
