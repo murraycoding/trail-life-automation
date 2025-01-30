@@ -3,6 +3,8 @@
 import sys
 import os
 import pandas as pd
+import json
+
 from src.utils.file_functions import read_in_latest_file
 from src.utils.dataframe_functions import create_dataframe_with_headers
 from src.utils.troop_functions import make_youth_report, print_troop_dues_data, print_youth_report_data
@@ -10,7 +12,7 @@ from src.utils.google_functions import update_google_sheet, get_google_sheets_da
 from src.utils.row_functions import days_until_expiration, finalize_troop_dues
 
 
-def main():
+def main(env):
     """ Main function for the Trail Life Automation process """
     
     # read in latest file
@@ -23,25 +25,36 @@ def main():
     print_youth_report_data(youth_report)
  
     ### GOOGLE SHEETS UPDATES ###
-    # updates troop rosters (google sheets)
-    troop_roster_sheet_id = "1Ga4N7JoCFzdQPiks6xqPdu3jrMYmpjgToOLwGesL6uE" # check this
-    troop_roster_range = "Input Data!A:H" # check this
-    print("Updating Troop Roster")
-    update_google_sheet(troop_roster_sheet_id, troop_roster_range, youth_report.values.tolist())
+    # gets the id of the google sheets (prod vs dev)
+    with open("google_sheets_id_data.json") as file:
+        google_id_data = json.load(file)
+    
+    attendance_sheets_id = google_id_data[env]["attendance_sheets_id"]
+    attendance_sheet_range = "Input Data!A:G"
+    roster_sheets_id = google_id_data[env]["roster_sheets_id"]
+    roster_sheet_range = "Input Data!A:H"
+    dues_sheets_id = google_id_data[env]["dues_sheets_id"]
+    dues_sheet_range = "Dues by trailman!A:D"
 
-    # get troop dues info (google sheets)
-    troop_dues_sheet_id = "1BGJGcjv5_nICYkfDltZgWyEPm--zX5UBjOx6JSdzftw"
-    troop_dues_range = "Dues by trailman!A:D"
-    troop_dues_data = get_google_sheets_data(troop_dues_sheet_id, troop_dues_range)
+
+    # updates troop rosters (google sheets)
+    print("# # # # # # UPDATING TROOP ROSTER # # # # # #")
+    update_google_sheet(roster_sheets_id, roster_sheet_range, youth_report.values.tolist())
+    print("# # # # # # TROOP ROSTER UPDATED # # # # # #")
+    
+    print("\n")
+    
+    print("# # # # # # GETTING TROOP DUES INFO # # # # # #")
+    troop_dues_data = get_google_sheets_data(dues_sheets_id, dues_sheet_range)
     troop_dues_df = pd.DataFrame(troop_dues_data[1:], columns=[item.upper() for item in troop_dues_data[0]])
     # clean dues information
     troop_dues_df['DUES PAID'] = troop_dues_df['DUES PAID'].apply(lambda x: x.strip().upper())
-    print_troop_dues_data(troop_dues_df)
-
-    # join troop dues data with youth report
     final_troop_df = pd.merge(youth_report, troop_dues_df, on='MEMBER_NUMBER', how='left')
-    
-    # update attendance data
+    print("# # # # # # TROOP DUES INFO RETRIEVED # # # # # #")
+
+    print("\n")
+
+    print("# # # # # # UPDATING ATTENDANCE DATA # # # # # #")
     attendance_df = pd.DataFrame()
     attendance_df['NAME'] = final_troop_df['NAME']
     attendance_df['PATROL'] = final_troop_df['PATROL']
@@ -53,9 +66,12 @@ def main():
     if attendance_df['TROOP DUES'].isnull().values.any():
         attendance_df = attendance_df.fillna('Missing Data')
 
-    update_google_sheet("1Mm2kYC8j6YLc6nISQFdvgIxXDiZjYaphxZQd9M6DWic", "Input Data!A:G", attendance_df.values.tolist())
+    update_google_sheet(attendance_sheets_id, attendance_sheet_range, attendance_df.values.tolist())
+    print("# # # # # # ATTENDANCE SHEETS UPDATED # # # # # #")
 
     return None
 
 if __name__ == "__main__":
-    main()
+    main("DEV")
+
+
