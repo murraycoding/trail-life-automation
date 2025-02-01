@@ -35,19 +35,24 @@ def main(env):
     roster_sheet_range = "Input Data!A:H"
     dues_sheets_id = google_id_data[env]["dues_sheets_id"]
     dues_sheet_range = "Dues by trailman!A:D"
-
-
+    
     # updates troop rosters (google sheets)
     print("# # # # # # TROOP ROSTER # # # # # #")
     clear_range(roster_sheets_id, roster_sheet_range)
     update_google_sheet(roster_sheets_id, roster_sheet_range, youth_report.values.tolist())
     print("# # # # # # END OF TROOP ROSTER # # # # # #")
-    
+
     print("\n")
     
     print("# # # # # # TROOP DUES # # # # # #")
+
+    # update the dues information sheet and put new people at the bottom
+    # get all of the information for the dues sheet
     troop_dues_data = get_google_sheets_data(dues_sheets_id, dues_sheet_range)
     troop_dues_df = pd.DataFrame(troop_dues_data[1:], columns=[item.upper() for item in troop_dues_data[0]])
+    # updates the troop dues sheet with only current trailmen (add new and remove old)
+    update_troop_dues_names(youth_report, troop_dues_df, dues_sheet_range, dues_sheets_id)
+
     # clean dues information
     troop_dues_df['DUES PAID'] = troop_dues_df['DUES PAID'].apply(lambda x: x.strip().upper())
     final_troop_df = pd.merge(youth_report, troop_dues_df, on='MEMBER_NUMBER', how='left')
