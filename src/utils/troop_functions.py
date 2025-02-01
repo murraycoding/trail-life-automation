@@ -93,7 +93,7 @@ def print_youth_report_data(youth_report):
     """
     Prints testing data on the troop report
     """
-    print(" - - - - - - TROOP REPORT DATA - - - - - - ")
+    print(" - - - - - - TROOP YOUTH REPORT DATA - - - - - - ")
     print(youth_report.head())
     print(f"Number of Trailmen: {len(youth_report)}")
     print(f"Youth Report Column Names = {youth_report.columns}")
@@ -102,7 +102,7 @@ def print_youth_report_data(youth_report):
     print(f"Number of Trailmen in Mountain Lion: {len(youth_report[youth_report['PATROL'] == 'Mountain Lion'])}")
     print(f"Number of Trailmen in Navigators: {len(youth_report[youth_report['PATROL'] == 'Navigator'])}")
     print(f"Number of Trailmen in Adventurers: {len(youth_report[youth_report['PATROL'] == 'Adventurer'])}")
-    print(" - - - - - - END OF TROOP REPORT DATA - - - - - - ")
+    print(" - - - - - - END OF YOUTH TROOP REPORT DATA - - - - - - ")
     print()
 
     return {
