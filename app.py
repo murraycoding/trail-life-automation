@@ -6,9 +6,9 @@ import pandas as pd
 import json
 
 from src.utils.file_functions import read_in_latest_file
-from src.utils.dataframe_functions import create_dataframe_with_headers
+from src.utils.dataframe_functions import create_dataframe_with_headers, update_troop_dues_names
 from src.utils.troop_functions import make_youth_report, print_troop_dues_data, print_youth_report_data
-from src.utils.google_functions import update_google_sheet, get_google_sheets_data
+from src.utils.google_functions import update_google_sheet, get_google_sheets_data, clear_range
 from src.utils.row_functions import days_until_expiration, finalize_troop_dues
 
 
