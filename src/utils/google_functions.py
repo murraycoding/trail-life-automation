@@ -72,6 +72,21 @@ def update_google_sheet(sheet_id, range_name, data):
 
     except HttpError as http_error:
         print(f"An http error occurred: {http_error}")
+    
+def clear_range(sheet_id, range_name):
+    
+    creds = get_google_creds()
+
+    service = build("sheets", "v4", credentials=creds)
+    sheet = service.spreadsheets()
+
+    clear_body = {}
+    sheet.values().clear(
+        spreadsheetId=sheet_id,
+        range=range_name,
+        body=clear_body).execute()
+    
+    return None
 
 def get_google_sheets_data(sheet_id, range_name):
     """

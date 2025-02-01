@@ -39,6 +39,7 @@ def main(env):
 
     # updates troop rosters (google sheets)
     print("# # # # # # TROOP ROSTER # # # # # #")
+    clear_range(roster_sheets_id, roster_sheet_range)
     update_google_sheet(roster_sheets_id, roster_sheet_range, youth_report.values.tolist())
     print("# # # # # # END OF TROOP ROSTER # # # # # #")
     
