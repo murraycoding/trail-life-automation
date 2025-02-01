@@ -1,0 +1,2 @@
+Example file so that the git log will pick up the next file.
+All xlsx file extensions (excel files) have been ignored due to the sensitive nature of the information.
