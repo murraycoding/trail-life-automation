@@ -50,6 +50,8 @@ def update_troop_dues_names(tlc_trailmen, troop_dues_df, dues_sheet_range, dues_
     clear_range(dues_sheets_id, dues_sheet_range)
     update_google_sheet(dues_sheets_id, dues_sheet_range, updated_dues_data.values.tolist())
 
+    return updated_dues_data
+
 
 
 
