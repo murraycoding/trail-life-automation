@@ -52,6 +52,22 @@ def update_troop_dues_names(tlc_trailmen, troop_dues_df, dues_sheet_range, dues_
 
     return updated_dues_data
 
+def find_trailman_latest_meeting(trailman_name, df):
+    """
+    Finds the latest meeting date for a given trailman.
+    """
+    trailman_meetings = df[df['Trailman Name'] == trailman_name] 
+    # convert the 'Activity Date' column to datetime
+    trailman_meetings['Activity Date'] = pd.to_datetime(trailman_meetings['Activity Date'], errors='coerce')
+    if not trailman_meetings.empty:
+        latest_meeting = trailman_meetings['Activity Date'].max()
+        patrol = trailman_meetings[trailman_meetings['Activity Date'] == latest_meeting]['Event Level'].values[0]
+        if pd.isna(patrol):
+            patrol = 'Unknown'
+        return latest_meeting, patrol
+    else:
+        return None, None
+
 
 
 
