@@ -47,24 +47,16 @@ def pull_date_from_filename(file_name):
 
     return format_date(month, day, year)
 
-def read_in_latest_attendance_file():
-    """
-    Reads in the latest attendance report.
-    :param: None
-    return: attendance_report, latest_file
-    """
+def read_in_attendance_file():
     current_directory = os.path.dirname(os.path.abspath(__file__))
-    reports_directory = os.path.join(current_directory, 'attendance_reports')
-
-    latest_file = None
-    largest_file_number = 0
-
-    for file_name in os.listdir(reports_directory):
-        file_number = int(file_name.split("-")[2].split(".")[0])
-        if file_number > largest_file_number:
-            largest_file_number = file_number
-            latest_file = file_name
+    parent_directory = os.path.dirname(current_directory)
+    attendance_reports_directory = os.path.join(parent_directory, 'attendance_reports')
     
-    attendance_report = pd.read_excel(os.path.join(reports_directory,latest_file), engine='openpyxl')
+    # put in a more specific method to get the last file
+    attendance_file = os.listdir(attendance_reports_directory)[0]
 
-    return attendance_report, str(latest_file)
+    attendance_df = pd.read_excel(os.path.join(attendance_reports_directory,attendance_file), engine='openpyxl')
+    attendance_df.columns = attendance_df.iloc[0]
+    attendance_df = attendance_df[1:].reset_index(drop=True)
+
+    return attendance_df
