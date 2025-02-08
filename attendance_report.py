@@ -67,4 +67,4 @@ def attendance_report(env):
     # 2. Get a list of the number of meetings each trailman has attended separated by the current year and last
 
 if __name__ == "__main__":
-    attendance_report("DEV")
+    attendance_report("PROD")
