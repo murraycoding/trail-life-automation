@@ -78,6 +78,9 @@ def days_until_expiration(row):
     Returns the days until a trailman's membership expires
     """
     date_str = row['MEMBERSHIP EXPIRATION']
+    if "/" not in date_str:
+        return "No date found"
+    
     date_list = date_str.split("/")
 
     month = date_list[0]

@@ -14,7 +14,7 @@ from src.utils.row_functions import days_until_expiration, finalize_troop_dues
 
 def main(env):
     """ Main function for the Trail Life Automation process """
-    
+    no_date_value = "-"
     # read in latest file
     troop_report, file_name = read_in_latest_file()
     
@@ -22,6 +22,8 @@ def main(env):
     troop_report = create_dataframe_with_headers(troop_report)
     
     youth_report = make_youth_report(troop_report)
+    # for members who join but do not officially register
+    youth_report['MEMBERSHIP EXPIRATION'] = youth_report['MEMBERSHIP EXPIRATION'].fillna(no_date_value)
     print_youth_report_data(youth_report)
  
     ### GOOGLE SHEETS UPDATES ###
@@ -39,9 +41,11 @@ def main(env):
     # updates troop rosters (google sheets)
     print("# # # # # # TROOP ROSTER # # # # # #")
     clear_range(roster_sheets_id, roster_sheet_range)
+    print("Youthe Report Data")
+    print(youth_report.values.tolist())
     update_google_sheet(roster_sheets_id, roster_sheet_range, youth_report.values.tolist())
     print("# # # # # # END OF TROOP ROSTER # # # # # #")
-
+    
     print("\n")
     
     print("# # # # # # TROOP DUES # # # # # #")
@@ -78,6 +82,6 @@ def main(env):
     return None
 
 if __name__ == "__main__":
-    main("DEV")
+    main("PROD")
 
 
